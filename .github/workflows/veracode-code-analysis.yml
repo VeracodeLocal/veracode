@@ -55,3 +55,31 @@ jobs:
       policy_name: ${{ github.event.client_payload.policy_name }}
       modules_to_scan: ${{ github.event.client_payload.modules_to_scan }}
     secrets: inherit
+
+  results_to_sarif:
+    needs: pipeline_scan
+    if: always()
+    runs-on: ubuntu-latest
+    name: import pipeline results to sarif
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - name: get scan results
+        uses: actions/download-artifact@v3
+        with:
+          name: "Veracode Pipeline-Scan Results"
+      - name: Convert pipeline scan output to SARIF format
+        id: convert
+        uses: Veracode/veracode-pipeline-scan-results-to-sarif@v1.0.7
+        with:
+          pipeline-results-json: filtered_results.json
+          output-results-sarif: veracode-results.sarif
+          source-base-path-1: "^com/veracode:src/main/java/com/veracode"
+          source-base-path-2: "^WEB-INF:src/main/webapp/WEB-INF"
+
+      - name: upload sarif file to repository
+        uses: github/codeql-action/upload-sarif@v2
+        with: # Path to SARIF file relative to the root of the repository
+          sarif_file: veracode-results.sarif
