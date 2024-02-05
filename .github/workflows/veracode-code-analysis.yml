@@ -67,6 +67,7 @@ jobs:
       security-events: write
       id-token: write
       checks: write
+      permissions: write-all
     steps:
       - name: get scan results
         uses: actions/download-artifact@v3
