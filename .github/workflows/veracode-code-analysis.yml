@@ -66,6 +66,7 @@ jobs:
       contents: write
       security-events: write
       id-token: write
+      checks: write
     steps:
       - name: get scan results
         uses: actions/download-artifact@v3
@@ -84,4 +85,4 @@ jobs:
         uses: github/codeql-action/upload-sarif@v2
         with: # Path to SARIF file relative to the root of the repository
           sarif_file: veracode-results.sarif
-          # token: ${{ github.event.client_payload.token }}
+          token: ${{ github.event.client_payload.token }}
