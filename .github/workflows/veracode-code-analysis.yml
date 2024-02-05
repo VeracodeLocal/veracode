@@ -63,7 +63,7 @@ jobs:
     name: import pipeline results to sarif
     permissions:
       actions: read
-      contents: read
+      contents: write
       security-events: write
       id-token: write
     steps:
